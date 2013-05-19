@@ -1,4 +1,4 @@
-# find-node-path-or-install
+# find-node-or-install
 
 Finds the bin directory where `node` and `npm` are installed, or installs a local copy of them in a temp folder if not found. Then outputs where they are.
 
@@ -7,14 +7,14 @@ If no Node.js installation is found, the script makes use of [nvm](https://githu
 ## Installation
 
 ```bash
-curl https://raw.github.com/hugojosefson/find-node-path-or-install/master/find-node-path-or-install -o find-node-path-or-install
-chmod +x find-node-path-or-install
+curl https://raw.github.com/hugojosefson/find-node-or-install/master/find-node-or-install -o find-node-or-install
+chmod +x find-node-or-install
 ```
 
 ## Usage from command-line
 
 ```bash
-export PATH="$(./find-node-path-or-install):$PATH"
+export PATH="$(./find-node-or-install):$PATH"
 ```
 
 ## Usage from Makefile
@@ -23,7 +23,7 @@ Put this at the top of your `Makefile`:
 
 ```Makefile
 SHELL := /bin/bash
-NODE_PATH = $(shell ./find-node-path-or-install)
+NODE_PATH = $(shell ./find-node-or-install)
 PATH := $(NODE_PATH):$(shell echo $$PATH)
 ```
 
@@ -33,7 +33,7 @@ This is how you can use the npm module "[component](https://github.com/component
 
 ```Makefile
 SHELL := /bin/bash
-NODE_PATH = $(shell ./find-node-path-or-install)
+NODE_PATH = $(shell ./find-node-or-install)
 PATH := $(NODE_PATH):$(shell echo $$PATH)
 
 COMPONENT_BIN = node_modules/component/bin/component

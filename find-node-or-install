@@ -5,7 +5,7 @@
 # are.
 #
 # Usage and install instructions:
-# https://github.com/hugojosefson/find-node-path-or-install
+# https://github.com/hugojosefson/find-node-or-install
 ##############################################################################
 
 # Creates temp dir which stays the same every time this script executes
