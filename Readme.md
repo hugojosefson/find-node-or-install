@@ -29,7 +29,7 @@ PATH := $(NODE_PATH):$(shell echo $$PATH)
 
 ### Example
 
-This is how you can use the npm module "[component](https://github.com/component/component)" without requiring NodeJS/npm to be installed on beforehand, and not even have `component` installed globally with npm. This will instead install and run `component` from the local `node_modules` directory.
+This is how you can use the npm module "[component](https://github.com/component/component)" without requiring Node.js/npm to be installed on beforehand, and not even have `component` installed globally with npm. This will instead install and run `component` from the local `node_modules` directory.
 
 ```Makefile
 SHELL := /bin/bash
