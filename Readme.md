@@ -63,6 +63,35 @@ Relevant `.gitignore` for the above `Makefile` would be this:
 
 All of this together enables you to use `component` (or any other npm module) in an environment where you don't have to make assumptions about Node.js/npm availability.
 
+## Optional executables
+
+There are also two `node` and `npm` executables available here. They can be used to launch `node` or `npm` via `find-or-install-node`.
+
+### Example
+
+```bash
+curl https://raw.github.com/hugojosefson/find-node-or-install/master/find-node-or-install -o find-node-or-install
+curl https://raw.github.com/hugojosefson/find-node-or-install/master/node -o node
+curl https://raw.github.com/hugojosefson/find-node-or-install/master/npm -o npm
+chmod +x find-node-or-install node npm
+```
+
+Then in a `hello.js` file which you want to execute, in the same directory:
+
+```javascript
+#!./node
+console.log('Hello from inside an executable .js file!');
+```
+
+Make it executable, and run it:
+
+```bash
+chmod +x hello.js
+./hello.js
+
+=> Hello from inside an executable .js file!
+```
+
 ## License
 
   MIT
