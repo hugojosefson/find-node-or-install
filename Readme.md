@@ -7,7 +7,7 @@ If no Node.js installation is found, the script makes use of [nvm](https://githu
 ## Installation
 
 ```bash
-curl https://raw.github.com/hugojosefson/find-node-or-install/master/find-node-or-install -o find-node-or-install
+curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install -o find-node-or-install
 chmod +x find-node-or-install
 ```
 
@@ -70,9 +70,9 @@ There are also two `node` and `npm` executables available here. They can be used
 ### Example
 
 ```bash
-curl https://raw.github.com/hugojosefson/find-node-or-install/master/find-node-or-install -o find-node-or-install
-curl https://raw.github.com/hugojosefson/find-node-or-install/master/node -o node
-curl https://raw.github.com/hugojosefson/find-node-or-install/master/npm -o npm
+curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install -o find-node-or-install
+curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/node -o node
+curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/npm -o npm
 chmod +x find-node-or-install node npm
 ```
 
