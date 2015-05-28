@@ -24,7 +24,7 @@ set -e
 # Try to find node, but don't break if not found
 NODE=$(which node || true)
 
-if [[ -n "${NODE}" ]]; then
+if [[ -n "${NODE}" ]]  && ! grep "find-node-or-install" "${NODE}" >/dev/null; then
   # Good. We found it.
   echo $(dirname ${NODE})
 else
