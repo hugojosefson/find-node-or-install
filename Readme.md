@@ -2,7 +2,7 @@
 
 Finds the bin directory where `node` and `npm` are installed, or installs a local copy of them in a temp folder if not found. Then outputs where they are.
 
-If no Node.js installation is found, the script makes use of [nvm](https://github.com/creationix/nvm), configuring it to install the latest Node.js 0.10.x in a temporary directory.
+If no Node.js installation is found, the script makes use of [nvm](https://github.com/creationix/nvm), configuring it to install the latest Node.js v4.x.x in a temporary directory.
 
 ## Installation
 
