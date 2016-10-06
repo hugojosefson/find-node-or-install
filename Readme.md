@@ -1,8 +1,11 @@
 # find-node-or-install
 
-Finds the bin directory where `node` and `npm` are installed, or installs a local copy of them in a temp folder if not found. Then outputs where they are.
+Finds the bin directory where `node` and `npm` are installed, or installs a local copy of them in a
+temp folder if not found. Then outputs where they are.
 
-If no Node.js installation is found, the script makes use of [nvm](https://github.com/creationix/nvm), configuring it to install the latest Node.js v4.x.x in a temporary directory.
+If no Node.js installation is found, the script makes use of
+[nvm](https://github.com/creationix/nvm), configuring it to install the latest Node.js v6.x.x in a
+temporary directory.
 
 ## Installation
 
@@ -10,6 +13,17 @@ If no Node.js installation is found, the script makes use of [nvm](https://githu
 curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install -o find-node-or-install
 chmod +x find-node-or-install
 ```
+
+## Choose Node.js version
+
+If you want, you can change the version of Node.js to be installed. Do it by changing this line in 
+`find-node-or-install`:
+
+    NODE_VERSION=6
+
+...to for example:
+
+    NODE_VERSION=4.6.0
 
 ## Usage from command-line
 
@@ -57,9 +71,9 @@ clean:
 
 Relevant `.gitignore` for the above `Makefile` would be this:
 
-    node_modules/
-    components/
-    build/
+    /node_modules/
+    /components/
+    /build/
 
 All of this together enables you to use `component` (or any other npm module) in an environment where you don't have to make assumptions about Node.js/npm availability.
 

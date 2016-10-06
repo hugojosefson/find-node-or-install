@@ -8,13 +8,15 @@
 # https://github.com/hugojosefson/find-node-or-install
 ##############################################################################
 
+NODE_VERSION=6
+
 # Creates temp dir which stays the same every time this script executes
 function setTEMP_DIR()
 {
   local NEW_OS_SUGGESTED_TEMP_FILE=$(mktemp -t asdXXXXX)
   local OS_ROOT_TEMP_DIR=$(dirname ${NEW_OS_SUGGESTED_TEMP_FILE})
   rm ${NEW_OS_SUGGESTED_TEMP_FILE}
-  TEMP_DIR=${OS_ROOT_TEMP_DIR}/nvm
+  TEMP_DIR=${OS_ROOT_TEMP_DIR}/nvm-${NODE_VERSION}
   mkdir -p ${TEMP_DIR}
 }
 
@@ -24,7 +26,7 @@ set -e
 # Try to find node, but don't break if not found
 NODE=$(which node || true)
 
-if [[ -n "${NODE}" ]]  && ! grep "find-node-or-install" "${NODE}" >/dev/null; then
+if [[ -n "${NODE}" ]]  && ! grep "find-node-or-install" "${NODE}" && [ $(${NODE} --version) == "v${NODE_VERSION}" ] >/dev/null; then
   # Good. We found it.
   echo $(dirname ${NODE})
 else
@@ -47,9 +49,9 @@ else
   # Load nvm into current shell
   . nvm/nvm.sh >/dev/null
 
-  # Install and use latest 4.x.x node
-  nvm install 4 >/dev/null
-  nvm alias default 4 >/dev/null
+  # Install and use the requested version of node
+  nvm install ${NODE_VERSION} >/dev/null
+  nvm alias default ${NODE_VERSION} >/dev/null
   nvm use default >/dev/null
 
   # Find and output node's bin directory
