@@ -8,7 +8,7 @@
 # https://github.com/hugojosefson/find-node-or-install
 ##############################################################################
 
-NODE_VERSION=6
+NODE_VERSION=8
 
 # Creates temp dir which stays the same every time this script executes
 function setTEMP_DIR()
