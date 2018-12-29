@@ -1,11 +1,17 @@
 # find-node-or-install
 
-Finds the bin directory where `node` and `npm` are installed, or installs a local copy of them in a
-temp folder if not found. Then outputs where they are.
+Finds the `bin` directory where `node`, `npm` and `npx` are installed.
+Or if not found, installs a local copy of them in a temp folder, then
+outputs where they are.
 
 If no Node.js installation is found, the script makes use of
-[nvm](https://github.com/creationix/nvm), configuring it to install the latest Node.js v6.x.x in a
-temporary directory.
+[nvm](https://github.com/creationix/nvm), configuring it to install the
+latest Node.js LTS version in a temporary directory.
+
+## Prerequisites
+
+  * `git`
+  * `curl`
 
 ## Installation
 
@@ -16,14 +22,12 @@ chmod +x find-node-or-install
 
 ## Choose Node.js version
 
-If you want, you can change the version of Node.js to be installed. Do it by changing this line in 
-`find-node-or-install`:
+If you want, you can change the version of Node.js to be installed. Do
+it by setting the `NODE_VERSION` env variable. Default is `--lts`.
 
-    NODE_VERSION=6
+Example:
 
-...to for example:
-
-    NODE_VERSION=4.6.0
+    NODE_VERSION=12 ./find-node-or-install
 
 ## Usage from command-line
 
@@ -41,56 +45,26 @@ NODE_PATH = $(shell ./find-node-or-install)
 PATH := $(NODE_PATH):$(shell echo $$PATH)
 ```
 
-### Example
-
-This is how you can use the npm module "[component](https://github.com/component/component)" without requiring Node.js/npm to be installed on beforehand, and not even have `component` installed globally with npm. This will instead install and run `component` from the local `node_modules` directory.
-
-```Makefile
-SHELL := /bin/bash
-NODE_PATH = $(shell ./find-node-or-install)
-PATH := $(NODE_PATH):$(shell echo $$PATH)
-
-COMPONENT_BIN = node_modules/component/bin/component
-
-all: build
-
-build: components
-	$(COMPONENT_BIN) build --dev
-
-components: $(COMPONENT_BIN) component.json
-	$(COMPONENT_BIN) install --dev
-
-$(COMPONENT_BIN):
-	npm install component@0.16.0
-
-clean:
-	rm -rf build components
-
-.PHONY: all clean
-```
-
-Relevant `.gitignore` for the above `Makefile` would be this:
-
-    /node_modules/
-    /components/
-    /build/
-
-All of this together enables you to use `component` (or any other npm module) in an environment where you don't have to make assumptions about Node.js/npm availability.
+All of this enables you to use any npm module in an environment where
+you don't have to make assumptions about Node.js/npm availability.
 
 ## Optional executables
 
-There are also two `node` and `npm` executables available here. They can be used to launch `node` or `npm` via `find-or-install-node`.
+There are also some executables available here. They can be used to
+launch `node`, `npm`, `npx` or `yarn` via `find-or-install-node`.
 
 ### Example
 
 ```bash
 curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install -o find-node-or-install
 curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/node -o node
-curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/npm -o npm
-chmod +x find-node-or-install node npm
+chmod +x find-node-or-install node
+ln -s node npm
+ln -s node npx
 ```
 
-Then in a `hello.js` file which you want to execute, in the same directory:
+Then in a `hello.js` file which you want to execute, in the same
+directory:
 
 ```javascript
 #!./node
