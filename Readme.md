@@ -54,7 +54,25 @@ you don't have to make assumptions about Node.js/npm availability.
 There are also some executables available here. They can be used to
 launch `node`, `npm`, `npx` or `yarn` via `find-or-install-node`.
 
-### Example
+### Examples
+
+#### Shebang in single .js file
+
+If you put these comments at the top of a `.js` file, you can make it self-contained and executable:
+
+```js
+#!/usr/bin/env bash
+/* 2>/dev/null
+export PATH="$(curl -s https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install | bash):$PATH"
+exec node "$0" "$@"
+*/
+
+console.log('Hello from inside a self-contained, *magically* executable .js file!')
+```
+
+#### Downloaded offline
+
+To keep `find-node-or-install` downloaded and offline: 
 
 ```bash
 curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install -o find-node-or-install
