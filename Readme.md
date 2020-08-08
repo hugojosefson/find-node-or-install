@@ -10,13 +10,12 @@ latest Node.js LTS version in a temporary directory.
 
 ## Prerequisites
 
-  * `bash`
   * `git`
   * `curl`
 
 ## Installation
 
-```bash
+```sh
 curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install -o find-node-or-install
 chmod +x find-node-or-install
 ```
@@ -32,7 +31,7 @@ Example:
 
 ## Usage from command-line
 
-```bash
+```sh
 export PATH="$(./find-node-or-install):$PATH"
 ```
 
@@ -41,7 +40,7 @@ export PATH="$(./find-node-or-install):$PATH"
 Put this at the top of your `Makefile`:
 
 ```Makefile
-SHELL := /bin/bash
+SHELL := /bin/sh
 NODE_PATH = $(shell ./find-node-or-install)
 PATH := $(NODE_PATH):$(shell echo $$PATH)
 ```
@@ -74,7 +73,7 @@ console.log('Hello from inside a self-contained, *magically* executable .js file
 
 To keep `find-node-or-install` downloaded and offline: 
 
-```bash
+```sh
 curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install -o find-node-or-install
 curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/node -o node
 chmod +x find-node-or-install node
@@ -92,7 +91,7 @@ console.log('Hello from inside an executable .js file!');
 
 Make it executable, and run it:
 
-```bash
+```sh
 chmod +x hello.js
 ./hello.js
 

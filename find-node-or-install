@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 ##############################################################################
 # Finds the bin directory where node and npm are installed, or installs a
 # local copy of them in a temp folder if not found. Then outputs where they
@@ -11,49 +11,85 @@
 set -e
 NODE_VERSION="${NODE_VERSION:---lts}"
 
-function get_os_tmp_dir() {
-  local file
+get_os_tmp_dir() { (
   file="$(mktemp)"
   rm "${file}"
-  
   dirname "${file}"
-}
+) }
 
 # Creates temp dir which stays the same every time this script executes
 # Outputs its path.
-function get_nvm_tmp_dir() {
-  local dir
+get_nvm_tmp_dir() { (
   dir="$(get_os_tmp_dir)/nvm"
   mkdir -p "${dir}"
   echo "${dir}"
+) }
+
+# https://github.com/dylanaraps/pure-sh-bible#trim-leading-and-trailing-white-space-from-string
+trim_string() {
+    # Usage: trim_string "   example   string    "
+
+    # Remove all leading white-space.
+    # '${1%%[![:space:]]*}': Strip everything but leading white-space.
+    # '${1#${XXX}}': Remove the white-space from the start of the string.
+    trim=${1#${1%%[![:space:]]*}}
+
+    # Remove all trailing white-space.
+    # '${trim##*[![:space:]]}': Strip everything but trailing white-space.
+    # '${trim#${XXX}}': Remove the white-space from the end of the string.
+    trim=${trim%${trim##*[![:space:]]}}
+
+    printf '%s\n' "$trim"
 }
 
+# https://github.com/dylanaraps/pure-sh-bible#strip-pattern-from-start-of-string
+lstrip() {
+    # Usage: lstrip "string" "pattern"
+    printf '%s\n' "${1##$2}"
+}
+  
+is_version() { (
+  possible_executable="${1}"
+  expected_version="${2}"
+  
+  found_version="$("${possible_executable}" --version)"
+  found_version="$(trim_string "${found_version}")"
+  found_version="$(lstrip "${found_version}" "v")"
+
+  # compare them
+  [ "${found_version}" = "${expected_version}" ]
+) }
+
+is_ourselves() { (
+  possible_executable="${1}"
+  grep "find-node-or-install" "${possible_executable}" >/dev/null 2>&1
+) }
+
 # Try to find node, but don't break if not found
-function find_node() {
-  local possible_executable
+find_node() { (
   possible_executable="$(command -v node || true)"
   
-  local found_version
-  if [[ -x "${possible_executable}" ]] && ! grep "find-node-or-install" "${possible_executable}" >/dev/null && found_version="$("${possible_executable}" --version)" && [ "${found_version//[^0-9.]/}" == "${NODE_VERSION}" ]; then
+  if [ -x "${possible_executable}" ] \
+  && ! is_ourselves "${possible_executable}" \
+  && is_version "${possible_executable}" "${NODE_VERSION}"; then
     # Good. We found it.
     dirname "${possible_executable}"
   fi
-}
+) }
 
-function download_nvm() {
-  local dir="${1}"
+download_nvm() { (
+  dir="${1}"
   git clone "git://github.com/nvm-sh/nvm.git" "${dir}" >/dev/null
-}
+) }
 
-function install_node(){
-  local install_dir
+install_node() { (
   install_dir="$(get_nvm_tmp_dir)"
   
   # go to the installation directory
   cd "${install_dir}"
   
   # Do we have nvm here?
-  if [[ ! -d "nvm" ]]; then
+  if [ ! -d "nvm" ]; then
     download_nvm "${install_dir}/nvm"
   fi
   
@@ -72,10 +108,9 @@ function install_node(){
   
   # Find and output node's bin directory
   dirname "$(command -v node)"  
-}
+) }
 
-function find_node_or_install() {
-  local found_dir
+find_node_or_install() { (
   found_dir="$(find_node)"
   
   if [ -n "${found_dir}" ]; then
@@ -85,6 +120,6 @@ function find_node_or_install() {
     # Do it in a temp dir, which stays the same every time this script executes
     install_node
   fi
-}
+) }
 
 find_node_or_install
