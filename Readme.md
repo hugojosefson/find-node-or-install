@@ -5,7 +5,7 @@ Or if not found, installs a local copy of them in a temp folder, then
 outputs where they are.
 
 If no Node.js installation is found, the script makes use of
-[nvm](https://github.com/creationix/nvm), configuring it to install the
+[nvm](https://github.com/nvm-sh/nvm), configuring it to install the
 latest Node.js LTS version in a temporary directory.
 
 ## Prerequisites
