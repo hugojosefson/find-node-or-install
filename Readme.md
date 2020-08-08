@@ -10,6 +10,7 @@ latest Node.js LTS version in a temporary directory.
 
 ## Prerequisites
 
+  * `bash`
   * `git`
   * `curl`
 
