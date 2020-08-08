@@ -52,7 +52,7 @@ you don't have to make assumptions about Node.js/npm availability.
 ## Optional executables
 
 There are also some executables available here. They can be used to
-launch `node`, `npm`, `npx` or `yarn` via `find-or-install-node`.
+launch `node`, `npm` or `npx` via `find-or-install-node`.
 
 ### Examples
 
