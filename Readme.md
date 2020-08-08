@@ -60,9 +60,9 @@ launch `node`, `npm` or `npx` via `find-or-install-node`.
 If you put these comments at the top of a `.js` file, you can make it self-contained and executable:
 
 ```js
-#!/usr/bin/env bash
+#!/bin/sh
 /* 2>/dev/null
-export PATH="$(curl -s https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install | bash):$PATH"
+export PATH="$(curl -s https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install | sh):$PATH"
 exec node "$0" "$@"
 */
 
