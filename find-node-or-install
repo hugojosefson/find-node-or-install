@@ -8,51 +8,83 @@
 # https://github.com/hugojosefson/find-node-or-install
 ##############################################################################
 
-NODE_VERSION=${NODE_VERSION:---lts}
+set -e
+NODE_VERSION="${NODE_VERSION:---lts}"
 
-# Creates temp dir which stays the same every time this script executes
-function setTEMP_DIR()
-{
-  local NEW_OS_SUGGESTED_TEMP_FILE=$(mktemp -t asdXXXXX)
-  local OS_ROOT_TEMP_DIR=$(dirname ${NEW_OS_SUGGESTED_TEMP_FILE})
-  rm ${NEW_OS_SUGGESTED_TEMP_FILE}
-  TEMP_DIR=${OS_ROOT_TEMP_DIR}/nvm
-  mkdir -p ${TEMP_DIR}
+function get_os_tmp_dir() {
+  local file
+  file="$(mktemp)"
+  rm "${file}"
+  
+  dirname "${file}"
 }
 
-# Break on error
-set -e
+# Creates temp dir which stays the same every time this script executes
+# Outputs its path.
+function get_nvm_tmp_dir() {
+  local dir
+  dir="$(get_os_tmp_dir)/nvm"
+  mkdir -p "${dir}"
+  echo "${dir}"
+}
 
 # Try to find node, but don't break if not found
-NODE=$(which node || true)
+function find_node() {
+  local possible_executable
+  possible_executable="$(command -v node || true)"
+  
+  local found_version
+  if [[ -x "${possible_executable}" ]] && ! grep "find-node-or-install" "${possible_executable}" >/dev/null && found_version="$("${possible_executable}" --version)" && [ "${found_version//[^0-9.]/}" == "${NODE_VERSION}" ]; then
+    # Good. We found it.
+    dirname "${possible_executable}"
+  fi
+}
 
-if [[ -n "${NODE}" ]]  && ! grep "find-node-or-install" "${NODE}" >/dev/null && [ $(${NODE} --version) == "v${NODE_VERSION}" ] >/dev/null; then
-  # Good. We found it.
-  echo $(dirname ${NODE})
-else
-  # Did not find node. Better install it.
-  # Do it in a temp dir, which stays the same every time this script executes
-  setTEMP_DIR
-  cd ${TEMP_DIR}
+function download_nvm() {
+  local dir="${1}"
+  git clone "git://github.com/creationix/nvm.git" "${dir}" >/dev/null
+}
 
+function install_node(){
+  local install_dir
+  install_dir="$(get_nvm_tmp_dir)"
+  
+  # go to the installation directory
+  cd "${install_dir}"
+  
   # Do we have nvm here?
   if [[ ! -d "nvm" ]]; then
-    git clone git://github.com/creationix/nvm.git ${TEMP_DIR}/nvm >/dev/null
+    download_nvm "${install_dir}/nvm"
   fi
-
+  
   # Clear and set NVM_* env variables to our installation
-  mkdir -p .nvm
-  export NVM_DIR=$( (cd .nvm && pwd) )
   unset NVM_PATH
   unset NVM_BIN
-
+  
+  NVM_DIR="$(mkdir -p .nvm && cd .nvm && pwd)"
+  export NVM_DIR
+  
   # Load nvm into current shell
   . nvm/nvm.sh >/dev/null
-
+  
   # Install and activate the requested version of node
-  nvm install ${NODE_VERSION} >/dev/null
-
+  nvm install "${NODE_VERSION}" >/dev/null
+  
   # Find and output node's bin directory
-  NODE=$(which node)
-  echo $(dirname ${NODE})
-fi
+  dirname "$(command -v node)"  
+}
+
+function find_node_or_install() {
+  local found_dir
+  found_dir="$(find_node)"
+  
+  if [ -n "${found_dir}" ]; then
+    echo "${found_dir}"
+  else
+    # Did not find node. Better install it.
+    # Do it in a temp dir, which stays the same every time this script executes
+    install_node
+  fi
+}
+
+find_node_or_install
