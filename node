@@ -1,5 +1,3 @@
 #!/usr/bin/env bash
-executable="$(basename "${0}")"
-current_dir="$(dirname "${0}")"
-export PATH="$("${current_dir}"/find-node-or-install):$PATH"
-exec "${executable}" "$@"
+export PATH="$("$(dirname "$0")"/find-node-or-install):$PATH"
+exec "$(basename "$0")" "$@"
