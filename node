@@ -2,4 +2,4 @@
 executable="$(basename "${0}")"
 current_dir="$(dirname "${0}")"
 export PATH="$("${current_dir}"/find-node-or-install):$PATH"
-"${executable}" "$@"
+exec "${executable}" "$@"
