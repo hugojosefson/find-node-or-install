@@ -1,9 +1,9 @@
-### 1.1.0
+### 1.2.0
    * Refactor for legibility, stability.
    * Simplify `example-shebang.js`.
-   * Update `Readme.md`. 
+   * Update `Readme.md`.
 
-### 1.0.0
+### 1.1.0
    * Support env variable `NODE_VERSION`.
    * Default install the latest Node.js LTS.
    * Use same temp dir for `nvm`, regardless of `NODE_VERSION`.
