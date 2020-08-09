@@ -1,3 +1,6 @@
+### 1.3.0
+   * Even less dependencies.
+
 ### 1.2.0
    * Refactor for legibility, stability.
    * Simplify `example-shebang.js`.
