@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+set -e
+
+test() {
+  local force_unpack_method="${1}"
+  local node_version="${2}"
+  shift; shift
+  local deps="${*}"
+  
+  local result="$(docker run --rm -i \
+    -e NODE_VERSION="${node_version}" \
+    -e FORCE_UNPACK_METHOD="${force_unpack_method}" \
+    -v "$(pwd)":/f:ro \
+    ubuntu bash -c "(apt-get update && apt-get install -y ${deps}) >/dev/null 2>&1 && /f/node --version 2>/dev/null")"
+  
+  local NL=$'\n'
+  local NR=$'\r'
+  
+  result="${result##$NL}"
+  result="${result##$NR}"
+  result="${result##v}"
+  
+  echo "With dep(s) ${deps}, unpacking with ${force_unpack_method}, requesting NODE_VERSION='${node_version}' ==> result='${result}'"
+}
+
+export -f test
+
+echo '
+"tar" "14.7.0" "wget"
+"git" "14.7.0" "wget git"
+"unzip" "14.7.0" "wget unzip"
+"tar" "14.7.0" "curl"
+"git" "14.7.0" "curl git"
+"unzip" "14.7.0" "curl unzip"
+
+"tar" "node" "wget"
+"git" "node" "wget git"
+"unzip" "node" "wget unzip"
+"tar" "node" "curl"
+"git" "node" "curl git"
+"unzip" "node" "curl unzip"
+
+"tar" "--lts" "wget"
+"git" "--lts" "wget git"
+"unzip" "--lts" "wget unzip"
+"tar" "--lts" "curl"
+"git" "--lts" "curl git"
+"unzip" "--lts" "curl unzip"
+' \
+| xargs -I{} -P 10 bash -c 'test {}'

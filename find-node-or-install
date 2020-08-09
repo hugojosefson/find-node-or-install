@@ -11,6 +11,11 @@
 set -e
 NODE_VERSION="${NODE_VERSION:---lts}"
 
+die() {
+  echo "$@" >&2
+  exit 1
+}
+
 get_os_tmp_dir() { (
   file="$(mktemp)"
   rm "${file}"
@@ -25,33 +30,10 @@ get_nvm_tmp_dir() { (
   echo "${dir}"
 ) }
 
-# https://github.com/dylanaraps/pure-sh-bible#trim-leading-and-trailing-white-space-from-string
-trim_string() {
-    # Usage: trim_string "   example   string    "
-
-    # Remove all leading white-space.
-    # '${1%%[![:space:]]*}': Strip everything but leading white-space.
-    # '${1#${XXX}}': Remove the white-space from the start of the string.
-    trim=${1#${1%%[![:space:]]*}}
-
-    # Remove all trailing white-space.
-    # '${trim##*[![:space:]]}': Strip everything but trailing white-space.
-    # '${trim#${XXX}}': Remove the white-space from the end of the string.
-    trim=${trim%${trim##*[![:space:]]}}
-
-    printf '%s\n' "$trim"
-}
-
-# https://github.com/dylanaraps/pure-sh-bible#strip-pattern-from-start-of-string
-lstrip() {
-    # Usage: lstrip "string" "pattern"
-    printf '%s\n' "${1##$2}"
-}
-  
 is_version() { (
   possible_executable="${1}"
   expected_version="${2}"
-  
+
   found_version="$("${possible_executable}" --version)"
   found_version="$(trim_string "${found_version}")"
   found_version="$(lstrip "${found_version}" "v")"
@@ -68,51 +50,86 @@ is_ourselves() { (
 # Try to find node, but don't break if not found
 find_node() { (
   possible_executable="$(command -v node || true)"
-  
-  if [ -x "${possible_executable}" ] \
-  && ! is_ourselves "${possible_executable}" \
-  && is_version "${possible_executable}" "${NODE_VERSION}"; then
+
+  if [ -x "${possible_executable}" ] &&
+    ! is_ourselves "${possible_executable}" &&
+    is_version "${possible_executable}" "${NODE_VERSION}"; then
     # Good. We found it.
     dirname "${possible_executable}"
   fi
 ) }
 
+is_available() {
+  command -v "${1}" >/dev/null 2>&1
+}
+
+download() { (
+  url="${1}"
+  if is_available curl; then
+    curl -sL "${url}"
+  elif is_available wget; then
+    wget -qO - "${url}"
+  else
+    die "curl or wget is required."
+  fi
+); }
+
+forced_other_unpack_method_than() {
+  unpack_method="${1}"
+  [ -n "${FORCE_UNPACK_METHOD}" ] && ! [ "${FORCE_UNPACK_METHOD}" = "${unpack_method}" ]
+}
+
 download_nvm() { (
   dir="${1}"
-  git clone "git://github.com/nvm-sh/nvm.git" "${dir}" >/dev/null
+
+  if is_available tar && ! forced_other_unpack_method_than tar; then
+    mkdir -p "${dir}"
+    download "https://codeload.github.com/nvm-sh/nvm/tar.gz/master" | tar xz --strip-components 1 -C "${dir}"
+  elif is_available git && ! forced_other_unpack_method_than git; then
+    git clone "git://github.com/nvm-sh/nvm.git" "${dir}" >/dev/null
+  elif is_available unzip && ! forced_other_unpack_method_than unzip; then
+    zip_file="$(mktemp).zip"
+    unpack_dir="$(mktemp -d)"
+    download "https://codeload.github.com/nvm-sh/nvm/zip/master" >"${zip_file}"
+    mkdir -p "${unpack_dir}"
+    unzip -oq "${zip_file}" -d "${unpack_dir}"
+    mv "${unpack_dir}/nvm-master" "${dir}"
+  else
+    die "tar, git, or unzip is required."
+  fi
 ) }
 
 install_node() { (
   install_dir="$(get_nvm_tmp_dir)"
-  
+
   # go to the installation directory
   cd "${install_dir}"
-  
+
   # Do we have nvm here?
   if [ ! -d "nvm" ]; then
     download_nvm "${install_dir}/nvm"
   fi
-  
+
   # Clear and set NVM_* env variables to our installation
   unset NVM_PATH
   unset NVM_BIN
-  
+
   NVM_DIR="$(mkdir -p .nvm && cd .nvm && pwd)"
   export NVM_DIR
-  
+
   # Load nvm into current shell
   . nvm/nvm.sh >/dev/null
-  
+
   # Install and activate the requested version of node
   nvm install "${NODE_VERSION}" >/dev/null
-  
+
   # Find and output node's bin directory
-  dirname "$(command -v node)"  
+  dirname "$(command -v node)"
 ) }
 
 find_node_or_install() { (
   found_dir="$(find_node)"
-  
+
   if [ -n "${found_dir}" ]; then
     echo "${found_dir}"
   else
@@ -123,3 +140,26 @@ find_node_or_install() { (
 ) }
 
 find_node_or_install
+
+# https://github.com/dylanaraps/pure-sh-bible#strip-pattern-from-start-of-string
+lstrip() {
+  # Usage: lstrip "string" "pattern"
+  printf '%s\n' "${1##$2}"
+}
+
+# https://github.com/dylanaraps/pure-sh-bible#trim-leading-and-trailing-white-space-from-string
+trim_string() {
+  # Usage: trim_string "   example   string    "
+
+  # Remove all leading white-space.
+  # '${1%%[![:space:]]*}': Strip everything but leading white-space.
+  # '${1#${XXX}}': Remove the white-space from the start of the string.
+  trim=${1#${1%%[![:space:]]*}}
+
+  # Remove all trailing white-space.
+  # '${trim##*[![:space:]]}': Strip everything but trailing white-space.
+  # '${trim#${XXX}}': Remove the white-space from the end of the string.
+  trim=${trim%${trim##*[![:space:]]}}
+
+  printf '%s\n' "$trim"
+}

@@ -10,8 +10,8 @@ latest Node.js LTS version in a temporary directory.
 
 ## Prerequisites
 
-  * `git`
-  * `curl`
+  * `curl` or `wget`; and
+  * `tar` or `unzip` or `git`
 
 ## Installation
 
