@@ -9,7 +9,8 @@
 ##############################################################################
 
 set -e
-NODE_VERSION="${NODE_VERSION:---lts}"
+NVMRC=$(cat .nvmrc 2>/dev/null || true)
+NODE_VERSION="${NODE_VERSION:-"${NVMRC:---lts}"}"
 
 die() {
   echo "$@" >&2
