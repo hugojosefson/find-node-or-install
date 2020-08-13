@@ -1,3 +1,6 @@
+### 1.4.0
+   * Also support `yarn` directly via symlink.
+
 ### 1.3.0
    * Even less dependencies.
 
