@@ -10,13 +10,15 @@ latest Node.js LTS version in a temporary directory.
 
 ## Prerequisites
 
-  * `curl` or `wget`; and
-  * `tar` or `unzip` or `git`
+* `curl` or `wget`; and
+* `tar` or `unzip` or `git`
 
 ## Installation
 
 ```sh
-curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install -o find-node-or-install
+curl -o find-node-or-install \
+  https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install
+  
 chmod +x find-node-or-install
 ```
 
@@ -27,7 +29,9 @@ it by setting the `NODE_VERSION` env variable. Default is `--lts`.
 
 Example:
 
-    NODE_VERSION=12 ./find-node-or-install
+```sh
+NODE_VERSION=12 ./find-node-or-install
+```
 
 ## Usage from command-line
 
@@ -50,14 +54,16 @@ you don't have to make assumptions about Node.js/npm availability.
 
 ## Optional executables
 
-There are also some executables available here. They can be used to
-launch `node`, `npm` or `npx` via `find-or-install-node`.
+There are also some executables+symlinks available here. They can be
+used to launch `node`, `npm`, `npx` or `yarn` via
+`find-or-install-node`.
 
 ### Examples
 
 #### Shebang in single .js file
 
-If you put these comments at the top of a `.js` file, you can make it self-contained and executable:
+If you put these comments at the top of a `.js` file, you can make it
+self-contained and executable:
 
 ```js
 #!/bin/sh
@@ -72,14 +78,19 @@ console.log('Hello from inside a self-contained, *magically* executable .js file
 
 #### Downloaded offline
 
-To keep `find-node-or-install` downloaded and offline: 
+To keep `find-node-or-install` downloaded and offline:
 
 ```sh
-curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install -o find-node-or-install
-curl https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/node -o node
+curl -o find-node-or-install \
+  https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/find-node-or-install 
+
+curl -o node \
+  https://raw.githubusercontent.com/hugojosefson/find-node-or-install/master/node 
+
 chmod +x find-node-or-install node
 ln -s node npm
 ln -s node npx
+ln -s node yarn
 ```
 
 Then in a `hello.js` file which you want to execute, in the same
@@ -101,4 +112,4 @@ chmod +x hello.js
 
 ## License
 
-  MIT
+MIT
