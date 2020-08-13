@@ -49,3 +49,11 @@ echo '
 "unzip" "--lts" "curl unzip"
 ' \
 | xargs -I{} -P 10 bash -c 'test {}'
+
+echo '
+
+This script'"'"'s exit code does not correspond with success/failure.
+
+DO MANUALLY CHECK THAT ABOVE RESULTS ARE SATISFACTORY!
+
+'
